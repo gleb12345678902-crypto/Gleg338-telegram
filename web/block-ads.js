@@ -1,31 +1,46 @@
-// Блокировка всей рекламы в Telegram Web K
-function blockAds() {
-  // Основные селекторы sponsored-сообщений
-  document.querySelectorAll('.sponsored-message, [data-is-sponsored], .tg-sponsored, .promo').forEach(el => {
+// Улучшенная блокировка рекламы в Telegram Web K (2026)
+function blockAllAds() {
+  // 1. Удаляем по атрибутам и классам sponsored
+  document.querySelectorAll('[data-sponsored], .sponsored-message, .tg-sponsored, [class*="sponsored"], [class*="promo"]').forEach(el => {
     el.style.display = 'none';
     el.remove();
   });
 
-  // Поиск по тексту "Sponsored", "Реклама" и подобным
-  document.querySelectorAll('div, span').forEach(el => {
-    const txt = (el.textContent || '').trim();
-    if (txt.includes('Sponsored') || txt.includes('Реклама') || 
-        txt.includes('sponsored') || txt.includes('Промо') || 
-        txt.includes('Sponsored by')) {
-      const message = el.closest('.message, .chat-item, div[role="listitem"]');
-      if (message) {
-        message.style.display = 'none';
-        message.remove();
+  // 2. Ищем по тексту "Sponsored", "Реклама" и т.п.
+  const adKeywords = ['Sponsored', 'Реклама', 'sponsored', 'Промо', 'Sponsored by', 'Рекомендуется'];
+  
+  document.querySelectorAll('div, span, p, button').forEach(el => {
+    const text = (el.textContent || '').trim();
+    if (adKeywords.some(keyword => text.includes(keyword))) {
+      const parentMessage = el.closest('div[class*="message"], div[role="listitem"], .chat-item, .bubble');
+      if (parentMessage) {
+        parentMessage.style.display = 'none';
+        parentMessage.remove();
       }
+    }
+  });
+
+  // 3. Дополнительно скрываем элементы с иконкой рекламы
+  document.querySelectorAll('svg, img').forEach(el => {
+    if (el.outerHTML && (el.outerHTML.includes('sponsored') || el.outerHTML.includes('promo'))) {
+      const container = el.closest('div');
+      if (container) container.remove();
     }
   });
 }
 
-// Запускаем сразу + следим за динамической подгрузкой сообщений
-const observer = new MutationObserver(blockAds);
-observer.observe(document.body, { childList: true, subtree: true });
+// Запускаем сразу после загрузки
+window.addEventListener('load', () => {
+  blockAllAds();
+  console.log('%c✅ Улучшенная блокировка рекламы активирована', 'color: lime; font-size: 14px;');
+});
 
-// Дополнительно проверяем каждую секунду
-setInterval(blockAds, 800);
+// Следим за всеми изменениями в чатах (Telegram динамически грузит сообщения)
+const observer = new MutationObserver(blockAllAds);
+observer.observe(document.body, { 
+  childList: true, 
+  subtree: true 
+});
 
-console.log('%c✅ Блокировка рекламы Telegram активирована', 'color: lime; font-weight: bold');
+// Периодическая проверка каждые 700 мс
+setInterval(blockAllAds, 700);
