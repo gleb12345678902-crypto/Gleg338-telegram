@@ -1,7 +1,7 @@
 {
   "appId": "telegram.tg.gleb",
   "appName": "Рарог Ивар",
-  "webDir": ".",
+  "webDir": "web",
   "bundledWebRuntime": false,
   "server": {
     "cleartext": true
