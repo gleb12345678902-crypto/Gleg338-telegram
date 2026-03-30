@@ -4,6 +4,10 @@
   "webDir": "web",
   "bundledWebRuntime": false,
   "server": {
-    "cleartext": true
+    "cleartext": true,
+    "url": "https://web.telegram.org"
+  },
+  "android": {
+    "allowMixedContent": true
   }
 }
