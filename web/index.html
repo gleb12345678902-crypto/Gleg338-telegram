@@ -3,25 +3,43 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Рарог Ивар</title>
+  <title>Рарог Ивар Ап-Морран-ап-Керр</title>
   <style>
-    body, html { 
-      margin: 0; 
-      padding: 0; 
-      height: 100%; 
-      overflow: hidden; 
-      background: #000; 
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+      background: #000;
     }
-    iframe { 
-      width: 100%; 
-      height: 100%; 
-      border: none; 
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+    .loading {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #fff;
+      font-size: 18px;
     }
   </style>
 </head>
 <body>
+  <div class="loading">Загрузка Telegram...</div>
   <iframe id="tgframe" src="https://web.telegram.org/k/"></iframe>
 
   <script src="block-ads.js"></script>
+
+  <script>
+    // Показываем, что идёт загрузка
+    const iframe = document.getElementById('tgframe');
+    iframe.onload = () => {
+      document.querySelector('.loading').style.display = 'none';
+      console.log('Telegram Web K загружен');
+    };
+  </script>
 </body>
 </html>
